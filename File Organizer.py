@@ -23,7 +23,15 @@ keepOriginalFiles = bool(int(input("Do you want to keep the original files? 1 fo
 # Go over all of the files
 for fileName in os.listdir(filesLocation):
   fileLocation = "{}\\{}".format(filesLocation, fileName)
-  createdTime = time.ctime(os.path.getctime(fileLocation))
+
+  # 0: Change time returns the creation time of a file or directory at the specified path.
+  #    I should never use 0 since I just moved all the files into the nas.
+  #    The change time will show as of today not when the file was created.
+  # 1: Modification time returns last modification time.
+  #    In my case it will be the true created time of the file since I do not modify pictures or videos.
+  useModificationTime = bool(int(input("Do you want to use modification time(1) or change time(0)?\n")))
+  
+  createdTime = time.ctime(os.path.getmtime(fileLocation) if useModificationTime else os.path.getmtime(fileLocation))
   createdDateTime = datetime.datetime.strptime(createdTime, "%a %b %d %H:%M:%S %Y")
   
   # Create the year folder if necessary.
